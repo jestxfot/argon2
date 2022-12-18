@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Argon2 Hash Generator, Validator & Verifier</title>
+    <meta name="description" content="Generate argon2i, argon2d and argon2id password hashes with variety options such as memory cost, parallelism factor, iterations count and hash length. Verify/Validate existing Argon2 hashes.">
+    <style>
+      #output_hash,#output_hex{height:1.2em;word-break:break-all;margin-bottom:2em;font-size:1.8em;vertical-align:middle;line-height:1.3}textarea{resize:none}#clear_btn:hover,#copy_hex_btn,#copy_hash_btn{border-color:#d3d3d3}.generate-salt-icn{cursor:pointer!important;top:10px!important}#calculate_btn:disabled{color:#fff}#calculate_btn .btn__text i{color:#fff;font-size:16px}.description{color:#737373}.learn-more-lnk{color:#2374cc;font-size:1.3em!important}.input-radio--innerlabel input:checked+label{background:#2477d1;border-color:#2477d1}footer ul{font-size:1.3em}.footer-title{font-size:1.6em;margin-bottom:1em;display:inline-block}.resources a{color:#2175d8}#verify_btn{cursor:pointer}#verifier_form{font-size:17px}
+    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="xapple-touch-icon.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="xfavicon-32x32.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="xfavicon-16x16.webp">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#6c5ce7">
+    <meta name="apple-mobile-web-app-title" content="ARGON2">
+    <meta name="application-name" content="ARGON2">
+    <meta name="msapplication-TileColor" content="#6c5ce7">
+    <meta name="theme-color" content="#6c5ce7">
+    <link rel="stylesheet" href="css/fontawesome-free-5.15.4-all.min.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/index.min.css" />
+  </head>
+  <body>
+    <main>
+      <div class="main-container">
+        <section class="bg--secondary space--sm">
+          <div class="container">
+            <div class="row justify-content-between">
+              <div class="col-12">
+                <div class="boxed boxed--border">
+                  <h2 class="text-center">Argon2 Hash Generator</h2>
+                  <form id="generate_form" class="needs-validation" novalidate>
+                    <div class="container-fluid">
+                      <div class="row mb-5">
+                        <div class="col-12">
+                          <label for="plain_text" class="h5 mb-2">Plain Text Input</label>
+                          <input type="text" id="plain_text" name="plain_text" class="mb-2 form-control form-control-lg" autofocus required />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                      </div>
+                      <div class="row mb-5">
+                        <div class="col-sm-3">
+                          <label for="salt" class="h5 mb-2">Salt</label>
+                          <div class="input-icon input-icon--right">
+                            <i class="material-icons generate-salt-icn" title="Generate Random Salt" id="generate_salt">settings</i>
+                            <input type="text" id="salt" name="salt" class="mb-2 form-control form-control-lg" required />
+                            <div class="invalid-feedback"></div>
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <label for="parallelism" class="h5 mb-2">Parallelism Factor</label>
+                          <input type="number" id="parallelism" name="parallelism" value="4" class="mb-2 form-control form-control-lg" />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-sm-2">
+                          <label for="memory" class="h5 mb-2">Memory Cost (KiB)</label>
+                          <input type="number" id="memory" name="memory" value="65536" class="mb-2 form-control form-control-lg" />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-sm-2">
+                          <label for="iterations" class="h5 mb-2">Iterations</label>
+                          <input type="number" id="iterations" name="iterations" value="3" class="mb-2 form-control form-control-lg" />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-sm-2">
+                          <label for="hash_length" class="h5 mb-2">Hash Length (Byte)</label>
+                          <input type="number" id="hash_length" name="hash_length" value="16" class="mb-2 form-control form-control-lg" />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                      </div>
+                      <div class="row mb-5">
+                        <div class="col-sm-6">
+                          <div class="input-radio input-radio--innerlabel">
+                            <input id="argon2i" type="radio" name="radio" value="1" checked />
+                            <label for="argon2i">Argon2i</label>
+                          </div>
+                          <div class="input-radio input-radio--innerlabel">
+                            <input id="argon2d" type="radio" name="radio" value="2" />
+                            <label for="argon2d">Argon2d</label>
+                          </div>
+                          <div class="input-radio input-radio--innerlabel">
+                            <input id="argon2id" type="radio" name="radio" value="3" />
+                            <label for="argon2id">Argon2id</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <a href="https://datatracker.ietf.org/doc/html/rfc9106#name-parameter-choice" target="_blank" rel="noopener noreferrer" title="How to Choose the Right Parameters for Argon2" class="learn-more-lnk">How to Choose the Right Parameters for Argon2 »</a>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <hr>
+                          <div class="row">
+                            <div class="col-12 mb-5">
+                              <h5 class="mb-2">
+                                Output in HEX Form
+                                <a class="btn btn--sm type--uppercase" id="copy_hex_btn" data-clipboard-target="#output_hex" title="Copy the hash to the clipboard" role="button">
+                                  <span class="btn__text">Copy</span>
+                                </a>
+                              </h5>
+                              <span id="output_hex" data-toggle="tooltip" data-container="body"> -- </span>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-12 mb-5">
+                              <h5 class="mb-2">
+                                Output in Encoded Form
+                                <a class="btn btn--sm type--uppercase" id="copy_hash_btn" data-clipboard-target="#output_hash" title="Copy the hash to the clipboard" role="button">
+                                  <span class="btn__text">Copy</span>
+                                </a>
+                              </h5>
+                              <span id="output_hash" data-toggle="tooltip" data-container="body"> -- </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-8">
+                          <a class="btn btn-block btn--lg btn--primary-2 type--uppercase mt-3" id="calculate_btn" role="button" title="Generate Argon2 Hash" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Generating Hash" data-original-text="Generate Hash">
+                            <span class="btn__text">
+                              Generate Hash
+                            </span>
+                          </a>
+                        </div>
+                        <div class="col-sm-4">
+                          <a class="btn btn-block btn--lg type--uppercase mt-3" id="clear_btn" role="button">
+                            <span class="btn__text">Reset Form</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-between mt-5">
+              <div class="col-12 text-center mb-5">
+                <h2>What is Argon2?</h2>
+                <p class="lead description">
+                  <b>Argon2</b> is cryptographic hashing algorithm, most recommended for password hashing.
+                </p>
+                <p class="lead description">
+                  It is designed by Alex Biryukov, Daniel Dinu, and Dmitry Khovratovich from University of Luxembourg.
+                </p>
+                <p class="lead description">
+                  Argon2 has 3 variants:
+                  <br>
+                  <b>Argon2d</b>, <b>Argon2i</b> and <b>Argon2id</b>. Argon2i is optimized for password hashing. Argon2 has 6 input parameters: password, salt, memory cost (the memory usage of the algorithm), time cost (the execution time of the algorithm and the number of iterations), parallelism factor (the number of parallel threads), hash length.
+                </p>
+                <a href="https://en.wikipedia.org/wiki/Argon2" target="_blank" rel="noopener noreferrer" title="Learn more about Argon2 on Wikipedia" class="learn-more-lnk">Learn more »</a>
+              </div>
+            </div>
+            <div class="row justify-content-between mt-5" id="argon2-hash-validator-verifier">
+              <div class="col-12">
+                <div class="boxed boxed--border">
+                  <h2 class="text-center">Argon2 Hash Validator / Verifier</h2>
+                  <form id="verifier_form" novalidate class="needs-validation">
+                    <div class="container-fluid">
+                      <div class="row mb-5">
+                        <div class="col">
+                          <label for="verify_plain_text" class="h5 mb-2">Plain Text</label>
+                          <input type="text" id="verify_plain_text" name="verify_plain_text" class="form-control form-control-lg" required />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                      </div>
+                      <div class="row mb-5">
+                        <div class="col">
+                          <label for="verify_hash" class="h5 mb-2">Hash</label>
+                          <input type="text" id="verify_hash" name="verify_hash" class="form-control form-control-lg" autofocus required />
+                          <div class="invalid-feedback"></div>
+                        </div>
+                      </div>
+                      <div class="row mb-2 text-center" id="validation_result_block">
+                        <div class="col">
+                          <span class="h3 validation-result text-success d-none" id="verified">
+                            The supplied hash matches with supplied plain text
+                          </span>
+                          <span class="h3 validation-result text-danger" id="not_verified"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <a class="btn btn-block btn--lg btn--primary-2 type--uppercase" id="verify_btn" role="button" title="Verify Argon2 Hash" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Verifying Hash" data-original-text="Verify Hash">
+                            <span class="btn__text">Verify Hash</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="bg--white space--xxs faq">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <h2>Frequently Asked Questions</h2>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="feature feature-1 boxed boxed--border">
+                  <div class="feature__body">
+                    <h3>What is Password Hashing?</h3>
+                    <p>
+                      Password hashing is a one-way process of securing plain text password by creating a bit string of a fixed size called hash using cryptographic hash function. Cryptographic hash functions designed to be a one-way function, that is, a function which is infeasible to invert.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="feature feature-1 boxed boxed--border">
+                  <div class="feature__body">
+                    <h3>What is Password Hashing Competition?</h3>
+                    <p>
+                      Password Hashing Competition, organized by cryptography and security experts, is an open competition to raise awareness of the need of strong password hashing algorithms and to identify hash functions that can be recognized as a recommended standard. Argon2 was selected as the final PHC winner on 20 July 2015.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="bg--secondary space--xxs resources">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <h2>Resources, Articles and Tutorials</h2>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="feature feature-2 boxed boxed--border">
+                  <i class="icon icon-Information color--primary"></i>
+                  <div class="feature__body">
+                    <h4>Argon2 Specifications PDF</h4>
+                    <p>
+                      <a target="_blank" rel="noopener noreferrer" title="Argon2 Specifications PDF" href="https://github.com/P-H-C/phc-winner-argon2/blob/master/argon2-specs.pdf">Argon2 Specifications PDF on GitHub</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="feature feature-2 boxed boxed--border">
+                  <i class="icon icon-Coding color--primary"></i>
+                  <div class="feature__body">
+                    <h4>Argon2 Source Code</h4>
+                    <p>
+                      <a target="_blank" rel="noopener noreferrer" title="Reference C Implementation of Argon2" href="https://github.com/p-h-c/phc-winner-argon2">Reference C Implementation of Argon2</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="text-center space--xs footer-5 bg--dark">
+      <div class="container">
+        <div class="row mt-5 copyright-row">
+          <div class="col-sm-6 text-lg-left text-md-left text-sm-center text-xs-center mt-5">
+            Copyright © 2022
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="js/jquery-3.4.0.slim.min.js" defer></script>
+    <script src="js/popper-1.14.7.min.js" defer></script>
+    <script src="js/bootstrap-4.3.1.min.js" defer></script>
+    <script src="js/argon2/page.js"></script>
+    <script src="js/clipboard-2.0.0.min.js" defer></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>
