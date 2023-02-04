@@ -35,12 +35,12 @@ function validateData() {
     $('.invalid-feedback')
         .text('');
     var plainTextMaxLength = 100000,
-        saltMaxLength = 1000,
+        saltMaxLength = 100,
         saltMinLength = 8,
         iterationsMinCount = 1,
         iterationsMaxCount = 20,
         hashMinLength = 4,
-        hashMaxLength = 100,
+        hashMaxLength = 1000,
         parallelismFactorMin = 1,
         parallelismFactorMax = 10,
         memoryMax = 128 * 1024;
