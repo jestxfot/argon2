@@ -35,7 +35,7 @@ function validateData() {
     $('.invalid-feedback')
         .text('');
     var plainTextMaxLength = 100000,
-        saltMaxLength = 100,
+        saltMaxLength = 1000,
         saltMinLength = 8,
         iterationsMinCount = 1,
         iterationsMaxCount = 20,
