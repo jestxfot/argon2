@@ -36,7 +36,7 @@ function validateData() {
         .text('');
     var plainTextMaxLength = 100000,
         saltMaxLength = 100,
-        saltMinLength = 1,
+        saltMinLength = 8,
         iterationsMinCount = 1,
         iterationsMaxCount = 20,
         hashMinLength = 4,
