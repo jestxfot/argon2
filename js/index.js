@@ -105,7 +105,7 @@ function validateData() {
 
 function generateSalt(length) {
     var salt = "";
-    var possible = "%&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var possible = "*ABCDEFGHIJKLMNOPQRSTUVWXYZ%bcdefgh&jklmnopqrstuvwxyz0123456789";
     for (var i = 0; i < length; i++) {
         salt += possible.charAt(Math.floor(Math.random() * possible.length));
     }
