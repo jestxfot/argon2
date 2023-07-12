@@ -139,7 +139,7 @@
                 const encoded = Module.allocate(new Array(512), 'i8', Module.ALLOC_NORMAL);
                 const encodedlen = 512;
                 const argon2Type = params.type || ArgonType.Argon2d;
-                const version = 0x66; // тут поменяли (13)
+                const version = 0x13; // тут поменяли (13)
                 let err;
                 let res;
                 try {
