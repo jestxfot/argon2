@@ -139,11 +139,11 @@
                 const encoded = Module.allocate(new Array(512), 'i8', Module.ALLOC_NORMAL);
                 const encodedlen = 512;
                 const argon2Type = params.type || ArgonType.Argon2d;
-                const version = 0x13; // тут поменяли
+                const version = 0x66; // тут поменяли (13)
                 let err;
                 let res;
                 try {
-                    res = Module._argon2_hash(tCost, mCost, parallelism, pwd, pwdlen, salt, saltlen, hash, hashlen, encoded, encodedlen, argon2Type, version);
+                    res = Module._argon2_hash('o', tCost, mCost, parallelism, pwd, pwdlen, salt, saltlen, hash, hashlen, encoded, encodedlen, argon2Type, version);
                 } catch (e) {
                     err = e;
                 }
