@@ -143,7 +143,7 @@
                 let err;
                 let res;
                 try {
-                    res = Module._argon2_hash('o', tCost, mCost, parallelism, pwd, pwdlen, salt, saltlen, hash, hashlen, encoded, encodedlen, argon2Type, version);
+                    res = Module._argon2_hash(tCost, mCost, parallelism, pwd, pwdlen, salt, saltlen, hash, hashlen, encoded, encodedlen, argon2Type, version);
                 } catch (e) {
                     err = e;
                 }
