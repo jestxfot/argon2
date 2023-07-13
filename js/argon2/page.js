@@ -154,7 +154,7 @@
                     for (let i = 0; i < hashlen; i++) {
                         const byte = Module.HEAP8[hash + i];
                         hashArr[i] = byte;
-                        hashStr += ('0' + (0xff & byte)
+                        hashStr += ('0' + (0xff   byte)
                                 .toString(16))
                             .slice(-2);
                     }
