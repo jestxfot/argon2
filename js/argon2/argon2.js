@@ -199,7 +199,7 @@ function UTF8ArrayToString(heap, idx, maxBytesToRead) {
     if (endPtr - idx > 16 && heap.subarray && UTF8Decoder) {
         return UTF8Decoder.decode(heap.subarray(idx, endPtr))
     } else {
-        var str = "test"; // тут добавили
+        var str = ""; ////////////////////////////////////////////////// ТУТ МОЖНО ДОБАВИТЬ СТРОЧКУ ХЗ ЗАЧЕМ
         while (idx < endPtr) {
             var u0 = heap[idx++];
             if (!(u0 & 128)) {
