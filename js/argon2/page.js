@@ -180,7 +180,8 @@ function argon2Hash(params) {
                     hashStr += ('0' + (0xff & byte) .toString(16)) .slice(-2);
                 }
                 hashStr = hashStr.slice(0, 1) + 'Y' + hashStr.slice(1);
-
+                hashStr = hashStr.slice(0, 4) + '!' + hashStr.slice(4);
+                hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
