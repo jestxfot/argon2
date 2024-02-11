@@ -189,6 +189,53 @@
             });
     }
 
+    function argon2Verify(params) {
+        return loadModule()
+            .then(Module => {
+                const pwdEncoded = encodeUtf8(params.pass);
+                const pwd = allocateArray(Module, pwdEncoded);
+                const pwdlen = pwdEncoded.length;
+                const encEncoded = encodeUtf8(params.encoded);
+                const enc = allocateArray(Module, encEncoded);
+                let argon2Type = params.type;
+                if (argon2Type === undefined) {
+                    let typeStr = params.encoded.split('$')[1];
+                    if (typeStr) {
+                        typeStr = typeStr.replace('a', 'A');
+                        argon2Type = ArgonType[typeStr] || ArgonType.Argon2d;
+                    }
+                }
+                let err;
+                let res;
+                try {
+                    res = Module._argon2_verify(enc, pwd, pwdlen, argon2Type);
+                } catch (e) {
+                    err = e;
+                }
+                let result;
+                if (res || err) {
+                    try {
+                        if (!err) {
+                            err = Module.UTF8ToString(Module._argon2_error_message(res));
+                        }
+                    } catch (e) {}
+                    result = {
+                        message: err,
+                        code: res
+                    };
+                }
+                try {
+                    Module._free(pwd);
+                    Module._free(enc);
+                } catch (e) {}
+                if (err) {
+                    throw result;
+                } else {
+                    return result;
+                }
+            });
+    }
+    
     function unloadRuntime() {
         if (loadModule._module) {
             loadModule._module.unloadRuntime();
