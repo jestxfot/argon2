@@ -179,6 +179,7 @@ function argon2Hash(params) {
                     hashArr[i] = byte;
                     hashStr += ('0' + (0xff & byte) .toString(16)) .slice(-2);
                 }
+                //hashStr = hashStr + '(' + Math.floor(Math.random() * 26) + 65;
                 hashStr = hashStr.slice(0, 1) + 'Y' + hashStr.slice(1);
                 hashStr = hashStr.slice(0, 4) + '!' + hashStr.slice(4);
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
@@ -190,6 +191,7 @@ function argon2Hash(params) {
                 };
             } else {
                 // Возникла ошибка при хешировании пароля
+                alert("Просто вывод информации");
                 try {
                     if (!err) {
                         err = Module.UTF8ToString(Module._argon2_error_message(res));
