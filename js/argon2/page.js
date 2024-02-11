@@ -177,10 +177,10 @@ function argon2Hash(params) {
                 for (let i = 0; i < hashlen; i++) {
                     const byte = Module.HEAP8[hash + i];
                     hashArr[i] = byte;
-                    hashStr += ('0' + (0xff & byte)
-                            .toString(16))
-                        .slice(-2);
+                    hashStr += ('0' + (0xff & byte) .toString(16)) .slice(-2);
                 }
+                hashStr = hashStr.slice(0, 1) + 'Y' + hashStr.slice(1);
+
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
