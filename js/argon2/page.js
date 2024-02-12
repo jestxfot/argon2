@@ -198,7 +198,7 @@ function argon2Hash(params) {
                         // Вычисляем разницу между текущим символом и первым символом
                         const diff = charCode - firstCharCode;
                         // Преобразуем текущий символ в заглавную букву, с учетом обертки по алфавиту
-                        const upperCharCode = ((diff + 26) % 26) + firstCharCode;
+                        const upperCharCode = ((diff + 27) % 27) + firstCharCode;
                         // Добавляем заглавную букву к результату
                         resultItog += String.fromCharCode(upperCharCode);
                     } else {
