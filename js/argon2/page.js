@@ -6,7 +6,8 @@
     } else {
         root.argon2 = factory();
     }
-})(typeof self !== 'undefined' ? self : this, function() {
+})
+(typeof self !== 'undefined' ? self : this, function() {
     const global = typeof self !== 'undefined' ? self : this;
     const ArgonType = {
         Argon2d: 0,
@@ -14,99 +15,99 @@
         Argon2id: 2
     };
 
-    function loadModule(mem) {
-        if (loadModule._promise) {
-            return loadModule._promise;
-        }
-        if (loadModule._module) {
-            return Promise.resolve(loadModule._module);
-        }
-        let promise;
-        if (global.process && global.process.versions && global.process.versions.node) {
-            promise = loadWasmModule()
-                .then(Module => new Promise(resolve => {
-                    Module.postRun = () => resolve(Module);
-                }));
-        } else {
-            promise = loadWasmBinary()
-                .then(wasmBinary => {
-                    const wasmMemory = mem ? createWasmMemory(mem) : undefined;
-                    return initWasm(wasmBinary, wasmMemory);
-                });
-        }
-        loadModule._promise = promise;
-        return promise.then(Module => {
-            loadModule._module = Module;
-            delete loadModule._promise;
-            return Module;
-        });
+function loadModule(mem) {
+    if (loadModule._promise) {
+        return loadModule._promise;
     }
+    if (loadModule._module) {
+        return Promise.resolve(loadModule._module);
+    }
+    let promise;
+    if (global.process && global.process.versions && global.process.versions.node) {
+        promise = loadWasmModule()
+            .then(Module => new Promise(resolve => {
+                Module.postRun = () => resolve(Module);
+            }));
+    } else {
+        promise = loadWasmBinary()
+            .then(wasmBinary => {
+                const wasmMemory = mem ? createWasmMemory(mem) : undefined;
+                return initWasm(wasmBinary, wasmMemory);
+            });
+    }
+    loadModule._promise = promise;
+    return promise.then(Module => {
+        loadModule._module = Module;
+        delete loadModule._promise;
+        return Module;
+    });
+}
 
-    function initWasm(wasmBinary, wasmMemory) {
-        return new Promise(resolve => {
-            global.Module = {
-                wasmBinary,
-                wasmMemory,
-                postRun() {
-                    resolve(Module);
-                }
-            };
-            return loadWasmModule();
-        });
-    }
+function initWasm(wasmBinary, wasmMemory) {
+    return new Promise(resolve => {
+        global.Module = {
+            wasmBinary,
+            wasmMemory,
+            postRun() {
+                resolve(Module);
+            }
+        };
+        return loadWasmModule();
+    });
+}
 
-    function loadWasmModule() {
-        if (global.loadArgon2WasmModule) {
-            return global.loadArgon2WasmModule();
-        }
-        if (typeof require === 'function') {
-            return Promise.resolve(require('./argon2.min.js'));
-        }
-        return import('./argon2.min.js');
+function loadWasmModule() {
+    if (global.loadArgon2WasmModule) {
+        return global.loadArgon2WasmModule();
     }
+    if (typeof require === 'function') {
+        return Promise.resolve(require('./argon2.min.js'));
+    }
+    return import('./argon2.min.js');
+}
 
-    function loadWasmBinary() {
-        if (global.loadArgon2WasmBinary) {
-            return global.loadArgon2WasmBinary();
-        }
-        if (typeof require === 'function') {
-            return Promise.resolve(require('./argon2.wasm'))
-                .then(wasmModule => {
-                    return decodeWasmBinary(wasmModule);
-                });
-        }
-        const wasmPath = global.argon2WasmPath || './js/argon2/argon2.wasm';
-        return fetch(wasmPath)
-            .then(response => response.arrayBuffer())
-            .then(ab => new Uint8Array(ab));
+function loadWasmBinary() {
+    if (global.loadArgon2WasmBinary) {
+        return global.loadArgon2WasmBinary();
     }
+    if (typeof require === 'function') {
+        return Promise.resolve(require('./argon2.wasm'))
+            .then(wasmModule => {
+                return decodeWasmBinary(wasmModule);
+            });
+    }
+    const wasmPath = global.argon2WasmPath || './js/argon2/argon2.wasm';
+    return fetch(wasmPath)
+        .then(response => response.arrayBuffer())
+        .then(ab => new Uint8Array(ab));
+}
 
-    function decodeWasmBinary(base64) {
-        const text = atob(base64);
-        const binary = new Uint8Array(new ArrayBuffer(text.length));
-        for (let i = 0; i < text.length; i++) {
-            binary[i] = text.charCodeAt(i);
-        }
-        return binary;
+function decodeWasmBinary(base64) {
+    const text = atob(base64);
+    const binary = new Uint8Array(new ArrayBuffer(text.length));
+    for (let i = 0; i < text.length; i++) {
+        binary[i] = text.charCodeAt(i);
     }
+    return binary;
+}
 
-    function createWasmMemory(mem) {
-        const KB = 1024 * 1024;
-        const MB = 1024 * KB;
-        const GB = 1024 * MB;
-        const WASM_PAGE_SIZE = 64 * 1024;
-        const totalMemory = (2 * GB - 64 * KB) / 1024 / WASM_PAGE_SIZE;
-        const initialMemory = Math.min(Math.max(Math.ceil((mem * 1024) / WASM_PAGE_SIZE), 256) + 256, totalMemory);
-        return new WebAssembly.Memory({
-            initial: initialMemory,
-            maximum: totalMemory
-        });
-    }
+function createWasmMemory(mem) {
+    const KB = 1024 * 1024;
+    const MB = 1024 * KB;
+    const GB = 1024 * MB;
+    const WASM_PAGE_SIZE = 64 * 1024;
+    const totalMemory = (2 * GB - 64 * KB) / 1024 / WASM_PAGE_SIZE;
+    const initialMemory = Math.min(Math.max(Math.ceil((mem * 1024) / WASM_PAGE_SIZE), 256) + 256, totalMemory);
+    return new WebAssembly.Memory({
+        initial: initialMemory,
+        maximum: totalMemory
+    });
+}
 
-    function allocateArray(Module, arr) {
-        const nullTerminatedArray = new Uint8Array([...arr, 0]);
-        return Module.allocate(nullTerminatedArray, 'i8', Module.ALLOC_NORMAL);
-    }
+function allocateArray(Module, arr) {
+    const nullTerminatedArray = new Uint8Array([...arr, 0]);
+    return Module.allocate(nullTerminatedArray, 'i8', Module.ALLOC_NORMAL);
+}
 
 function encodeUtf8(str) {
     if (typeof str !== 'string') {
@@ -282,17 +283,17 @@ function argon2Verify(params) {
         });
 }
 
-    function unloadRuntime() {
-        if (loadModule._module) {
-            loadModule._module.unloadRuntime();
-            delete loadModule._promise;
-            delete loadModule._module;
-        }
+function unloadRuntime() {
+    if (loadModule._module) {
+        loadModule._module.unloadRuntime();
+        delete loadModule._promise;
+        delete loadModule._module;
     }
-    return {
-        ArgonType,
-        hash: argon2Hash,
-        verify: argon2Verify,
-        unloadRuntime
-    };
+}
+return {
+    ArgonType,
+    hash: argon2Hash,
+    verify: argon2Verify,
+    unloadRuntime
+};
 });
