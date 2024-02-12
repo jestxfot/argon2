@@ -183,14 +183,14 @@ function argon2Hash(params) {
                 hashStr = hashStr.slice(0, 1) + 'Y' + hashStr.slice(1);
                 hashStr = hashStr.slice(0, 4) + '!' + hashStr.slice(4);
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
-
+                alert(hashStr);
                 // Получаем ASCII-код первого символа строки hashStr
                 const firstCharCode = hashStr.charCodeAt(0);
-                // Генерируем псевдослучайное число на основе ASCII-кода
-                const randomIndex = (firstCharCode % hashStr.length);
-
-                // Преобразуем символ в строку и делаем его заглавным
-                hashStr = hashStr.substring(0, randomIndex) + hashStr.charAt(randomIndex).toUpperCase() + hashStr.substring(randomIndex + 1);
+                const randomIndex = firstCharCode % hashStr.length;
+                // Получаем символ по этому индексу и делаем его заглавным
+                const charToReplace = hashStr.charAt(randomIndex).toUpperCase();
+                // Заменяем символ в строке
+                hashStr = hashStr.substring(0, randomIndex) + charToReplace + hashStr.substring(randomIndex + 1);
 
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
