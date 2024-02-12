@@ -250,7 +250,13 @@ function capitalizeBasedOnFirstCharacter(str) {
     for (let i = 0; i < str.length; i++) {
         const char = str[i];
         // Определяем, должен ли текущий символ быть заглавным или строчным
-        const currentCharIsUpperCase = (i % 2 === 0) ? firstCharIsUpperCase : !firstCharIsUpperCase;
+
+        let currentCharIsUpperCase;
+        if (i % 2 === 0) {
+            currentCharIsUpperCase = firstCharIsUpperCase;
+        } else {
+            currentCharIsUpperCase = !firstCharIsUpperCase;
+        }
 
         if (currentCharIsUpperCase) {
             result += char.toUpperCase();
