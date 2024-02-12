@@ -268,6 +268,19 @@ function capitalizeBasedOnFirstCharacter(str) {
     return result;
 }
 
+function addSpecialCharacters(str) {
+    const specialChars = ['@', '#', '$', '%', '&']; // Массив специальных символов
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
+        result += str[i];
+        if ((i + 1) % 5 === 0 && i !== str.length - 1) { // Добавляем символ только если это не последний символ в строке
+            const specialCharIndex = (str.charCodeAt(0) + i) % specialChars.length; // Вычисляем индекс специального символа на основе первого символа и позиции
+            result += specialChars[specialCharIndex]; // Добавляем специальный символ
+        }
+    }
+    return result;
+}
+
 function argon2Verify(params) {
     return loadModule()
         .then(Module => {
