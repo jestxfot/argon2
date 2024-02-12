@@ -189,7 +189,7 @@ function argon2Hash(params) {
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
-                    hashHex: hashStr,
+                    hashHex: modifiedHashStr,
                     encoded: encodedStr
                 };
             } else {
@@ -223,7 +223,7 @@ function argon2Hash(params) {
         });
 }
 
-function capitalizeEverySecondCharacter(hashStr) {
+function capitalizeEverySecondCharacter(hashStr) { // добавление больших букв в хэш
     let result = '';
     for (let i = 0; i < hashStr.length; i++) {
         if (i % 2 === 1) { // Проверяем, является ли текущий индекс нечетным
