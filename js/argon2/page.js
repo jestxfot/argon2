@@ -172,7 +172,7 @@ function argon2Hash(params) {
             let result;
             if (res === 0 && !err) {
                 // Пароль успешно закодирован
-                let hashStr = '';
+                let hashStr = ''; ///// Output in HEX Form
                 const hashArr = new Uint8Array(hashlen);
                 for (let i = 0; i < hashlen; i++) {
                     const byte = Module.HEAP8[hash + i];
@@ -183,6 +183,7 @@ function argon2Hash(params) {
                 hashStr = hashStr.slice(0, 1) + 'Y' + hashStr.slice(1);
                 hashStr = hashStr.slice(0, 4) + '!' + hashStr.slice(4);
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
+                alert(hashArr);
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
