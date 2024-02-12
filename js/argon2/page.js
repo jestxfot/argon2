@@ -184,18 +184,36 @@ function argon2Hash(params) {
                 hashStr = hashStr.slice(0, 4) + '!' + hashStr.slice(4);
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
                 alert(hashStr);
+
                 // Получаем ASCII-код первого символа строки hashStr
                 const firstCharCode = hashStr.charCodeAt(0);
-                const randomIndex = firstCharCode % hashStr.length;
-                // Получаем символ по этому индексу и делаем его заглавным
-                const charToReplace = hashStr.charAt(randomIndex).toUpperCase();
-                // Заменяем символ в строке
-                hashStr = hashStr.substring(0, randomIndex) + charToReplace + hashStr.substring(randomIndex + 1);
+
+                // Преобразуем символы в строке, начиная со второго, в заглавные
+                let resultItog = "";
+                for (let i = 0; i < hashStr.length; i++) {
+                    // Получаем ASCII-код текущего символа
+                    const charCode = hashStr.charCodeAt(i);
+                    // Проверяем, является ли символ буквой
+                    if (charCode >= 97 && charCode <= 122) { // ASCII коды для букв от a до z
+                        // Вычисляем разницу между текущим символом и первым символом
+                        const diff = charCode - firstCharCode;
+                        // Преобразуем текущий символ в заглавную букву, с учетом обертки по алфавиту
+                        const upperCharCode = ((diff + 26) % 26) + firstCharCode;
+                        // Добавляем заглавную букву к результату
+                        resultItog += String.fromCharCode(upperCharCode);
+                    } else {
+                        // Если символ не является буквой, оставляем его без изменений
+                        resultItog += hashStr[i];
+                    }
+                }
+
+                // В переменной resultItog содержится строка, где каждая последующая буква после первого стала заглавной относительно первого символа
+
 
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
-                    hashHex: hashStr,
+                    hashHex: resultItog,
                     encoded: encodedStr
                 };
             } else {
