@@ -186,7 +186,8 @@ function argon2Hash(params) {
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
                 alert(hashStr);
 
-                const modifiedHashStr = capitalizeBasedOnFirstCharacter(hashStr)
+                modifiedHashStr = capitalizeBasedOnFirstCharacter(hashStr)
+                modifiedHashStr = addSpecialCharacters(modifiedHashStr)
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
