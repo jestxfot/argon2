@@ -185,7 +185,7 @@ function argon2Hash(params) {
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
                 alert(hashStr);
 
-
+                const modifiedHashStr = capitalizeEverySecondCharacter(hashStr)
                 const encodedStr = Module.UTF8ToString(encoded);
                 result = {
                     hash: hashArr,
@@ -223,6 +223,17 @@ function argon2Hash(params) {
         });
 }
 
+function capitalizeEverySecondCharacter(hashStr) {
+    let result = '';
+    for (let i = 0; i < hashStr.length; i++) {
+        if (i % 2 === 1) { // Проверяем, является ли текущий индекс нечетным
+            result += hashStr[i].toUpperCase(); // Если да, то преобразуем символ в заглавную букву
+        } else {
+            result += hashStr[i]; // Если нет, оставляем символ без изменений
+        }
+    }
+    return result;
+}
 
     function argon2Verify(params) {
         return loadModule()
