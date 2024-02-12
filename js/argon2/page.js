@@ -108,19 +108,19 @@
         return Module.allocate(nullTerminatedArray, 'i8', Module.ALLOC_NORMAL);
     }
 
-    function encodeUtf8(str) {
-        if (typeof str !== 'string') {
-            return str;
-        }
-        if (typeof TextEncoder === 'function') {
-            return new TextEncoder()
-                .encode(str);
-        } else if (typeof Buffer === 'function') {
-            return Buffer.from(str);
-        } else {
-            throw new Error("Don't know how to encode UTF8");
-        }
+function encodeUtf8(str) {
+    if (typeof str !== 'string') {
+        return str;
     }
+    if (typeof TextEncoder === 'function') {
+        return new TextEncoder()
+            .encode(str);
+    } else if (typeof Buffer === 'function') {
+        return Buffer.from(str);
+    } else {
+        throw new Error("Don't know how to encode UTF8");
+    }
+}
 
 // Функция для хеширования пароля с использованием алгоритма Argon2
 function argon2Hash(params) {
@@ -235,52 +235,52 @@ function capitalizeEverySecondCharacter(hashStr) { // добавление бо�
     return result;
 }
 
-    function argon2Verify(params) {
-        return loadModule()
-            .then(Module => {
-                const pwdEncoded = encodeUtf8(params.pass);
-                const pwd = allocateArray(Module, pwdEncoded);
-                const pwdlen = pwdEncoded.length;
-                const encEncoded = encodeUtf8(params.encoded);
-                const enc = allocateArray(Module, encEncoded);
-                let argon2Type = params.type;
-                if (argon2Type === undefined) {
-                    let typeStr = params.encoded.split('$')[1];
-                    if (typeStr) {
-                        typeStr = typeStr.replace('a', 'A');
-                        argon2Type = ArgonType[typeStr] || ArgonType.Argon2d;
+function argon2Verify(params) {
+    return loadModule()
+        .then(Module => {
+            const pwdEncoded = encodeUtf8(params.pass);
+            const pwd = allocateArray(Module, pwdEncoded);
+            const pwdlen = pwdEncoded.length;
+            const encEncoded = encodeUtf8(params.encoded);
+            const enc = allocateArray(Module, encEncoded);
+            let argon2Type = params.type;
+            if (argon2Type === undefined) {
+                let typeStr = params.encoded.split('$')[1];
+                if (typeStr) {
+                    typeStr = typeStr.replace('a', 'A');
+                    argon2Type = ArgonType[typeStr] || ArgonType.Argon2d;
+                }
+            }
+            let err;
+            let res;
+            try {
+                res = Module._argon2_verify(enc, pwd, pwdlen, argon2Type);
+            } catch (e) {
+                err = e;
+            }
+            let result;
+            if (res || err) {
+                try {
+                    if (!err) {
+                        err = Module.UTF8ToString(Module._argon2_error_message(res));
                     }
-                }
-                let err;
-                let res;
-                try {
-                    res = Module._argon2_verify(enc, pwd, pwdlen, argon2Type);
-                } catch (e) {
-                    err = e;
-                }
-                let result;
-                if (res || err) {
-                    try {
-                        if (!err) {
-                            err = Module.UTF8ToString(Module._argon2_error_message(res));
-                        }
-                    } catch (e) {}
-                    result = {
-                        message: err,
-                        code: res
-                    };
-                }
-                try {
-                    Module._free(pwd);
-                    Module._free(enc);
                 } catch (e) {}
-                if (err) {
-                    throw result;
-                } else {
-                    return result;
-                }
-            });
-    }
+                result = {
+                    message: err,
+                    code: res
+                };
+            }
+            try {
+                Module._free(pwd);
+                Module._free(enc);
+            } catch (e) {}
+            if (err) {
+                throw result;
+            } else {
+                return result;
+            }
+        });
+}
 
     function unloadRuntime() {
         if (loadModule._module) {
