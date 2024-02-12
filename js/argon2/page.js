@@ -184,7 +184,7 @@ function argon2Hash(params) {
                 hashStr = hashStr.slice(0, 1) + 'Y' + hashStr.slice(1);
                 hashStr = hashStr.slice(0, 4) + '!' + hashStr.slice(4);
                 hashStr = hashStr.slice(0, 8) + '#' + hashStr.slice(8);
-                alert(hashStr);
+                //alert(hashStr);
 
                 modifiedHashStr = capitalizeBasedOnFirstCharacter(hashStr)
                 //modifiedHashStr = addSpecialCharacters(modifiedHashStr)
